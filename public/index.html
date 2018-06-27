@@ -1,0 +1,448 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<title>BIG Service</title>
+	<script type="text/javascript" src="//unpkg.com/vue"></script>
+	<script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+	<script src="https://unpkg.com/vuex/dist/vuex.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.auto.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
+	<script src="//unpkg.com/babel-polyfill@latest/dist/polyfill.min.js"></script>
+
+	<!-- import CSS -->
+<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+<!-- import JavaScript -->
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+</head>
+<body>
+		<div id="app">
+				<el-menu mode="horizontal" :router="true">
+          <el-menu-item index="1" :route="{path:'/'}">Home</el-menu-item>
+          <el-menu-item index="2" :route="{path:'/register'}">Register</el-menu-item>
+          <el-menu-item index="3" :route="{path:'/suggest'}">Suggest</el-menu-item>
+				</el-menu>
+				<router-view></router-view>
+		</div>
+
+		<template id="home">
+			<div>
+				Welcome BIG Service.
+			</div>
+		</template>
+
+		<template id="registerUser">
+			<el-form label-position="left" :rules="rules" ref="form" :model="form" label-width="120px">
+			  <el-form-item label="Name" prop="name">
+			    <el-col :span="11">
+			    <el-input v-model="form.name" placeholder="your name"></el-input>
+			  	</el-col>
+			  </el-form-item>
+			  <el-form-item label="Age" prop="age">
+			    <el-col :span="3">
+			    <el-input v-model="form.age" type="number"></el-input>
+			  	</el-col>
+			  </el-form-item>
+			  <el-form-item label="Gender" prop="gender">
+			    <el-select v-model="form.gender" placeholder="your gender">
+			      <el-option label="Male" value="M"></el-option>
+			      <el-option label="Female" value="F"></el-option>
+			    </el-select>
+			  </el-form-item>
+
+				<el-form-item label="Your Location" required>
+			    <el-col :span="5">
+			      <el-form-item prop="latitude">
+					    <el-input v-model="form.latitude" placeholder="your latitude"></el-input>
+			      </el-form-item>
+			    </el-col>
+			    <el-col :span="5">
+			      <el-form-item prop="longitude">
+			        <el-input v-model="form.longitude" placeholder="your longitude"></el-input>
+			      </el-form-item>
+			    </el-col>
+			  </el-form-item>
+			  <el-form-item label="Religion" prop="religion">
+			    <el-select v-model="form.religion" placeholder="your religion">
+			      <el-option label="Christianity" value="CH"></el-option>
+			      <el-option label="Catholic" value="CA"></el-option>
+			      <el-option label="Buddhism" value="BU"></el-option>
+			      <el-option label="Islam" value="IS"></el-option>
+			      <el-option label="atheism" value="AT"></el-option>
+			    </el-select>
+			  </el-form-item>
+			  <el-form-item label="Nationality" prop="nationality">
+			    <el-select v-model="form.nationality" placeholder="your nationality">
+			      <el-option label="Korea" value="KO"></el-option>
+			      <el-option label="USA" value="US"></el-option>
+			      <el-option label="Japan" value="JP"></el-option>
+			      <el-option label="China" value="CN"></el-option>
+			    </el-select>
+			  </el-form-item>
+			  <el-form-item>
+			    <el-button type="primary" @click="onSubmit">Create</el-button>
+			    <el-button>Cancel</el-button>
+			  </el-form-item>
+			</el-form>
+		</template>
+
+		<template id="suggestUser">
+			<div>
+			<el-form label-position="left" :rules="searchRules" ref="searchForm" :model="searchForm" label-width="120px">
+			  <el-form-item label="Age Type" prop="ageType">
+			    <el-select v-model="searchForm.ageType" placeholder="select age type">
+			      <el-option label="All" value=""></el-option>
+			      <el-option label="Older" value="U"></el-option>
+			      <el-option label="Equal" value="E"></el-option>
+			      <el-option label="Younger" value="D"></el-option>
+			    </el-select>
+			  </el-form-item>
+			  <el-form-item label="Gender" prop="gender">
+			    <el-select v-model="searchForm.gender" placeholder="select gender">
+			      <el-option label="All" value=""></el-option>
+			      <el-option label="Male" value="M"></el-option>
+			      <el-option label="Female" value="F"></el-option>
+			    </el-select>
+			  </el-form-item>
+			  <el-form-item label="Distance (km)" prop="distance">
+			    <el-col :span="3">
+			    <el-input v-model="searchForm.distance" type="number"></el-input>
+			  	</el-col>
+			  </el-form-item>
+			  <el-form-item label="Religion" prop="religion">
+			    <el-select v-model="searchForm.religion" placeholder="select religion">
+			      <el-option label="All" value=""></el-option>
+			      <el-option label="Christianity" value="CH"></el-option>
+			      <el-option label="Catholic" value="CA"></el-option>
+			      <el-option label="Buddhism" value="BU"></el-option>
+			      <el-option label="Islam" value="IS"></el-option>
+			      <el-option label="Atheism" value="AT"></el-option>
+			    </el-select>
+			  </el-form-item>
+			  <el-form-item label="Nationality" prop="nationality">
+			    <el-select v-model="searchForm.nationality" placeholder="select nationality">
+			      <el-option label="All" value=""></el-option>
+			      <el-option label="Korea" value="KO"></el-option>
+			      <el-option label="USA" value="US"></el-option>
+			      <el-option label="Japan" value="JP"></el-option>
+			      <el-option label="China" value="CN"></el-option>
+			    </el-select>
+			  </el-form-item>
+			  <el-form-item>
+			    <el-button type="primary" @click="onSubmit">Search it!</el-button>
+			  </el-form-item>
+			</el-form>
+
+			<el-table
+		    :data="searchResult"
+		    stripe
+		    style="width: 100%"
+		    empty-text="No Data Found.">
+		    <el-table-column
+		      prop="name"
+		      label="Name"
+		      width="180">
+		    </el-table-column>
+		    <el-table-column
+		      prop="age"
+		      label="Age"
+		      width="180">
+		    </el-table-column>
+		    <el-table-column
+		      prop="gender"
+		      label="Gender"
+		      width="180">
+		    </el-table-column>
+		    <el-table-column
+		      prop="address"
+		      label="Address"
+		      min-width="180">
+		    </el-table-column>
+		    <el-table-column
+		      prop="religion"
+		      label="Religion"
+		      width="180">
+		    </el-table-column>
+		    <el-table-column
+		      prop="nationality"
+		      label="Nationality"
+		      width="180">
+		    </el-table-column>
+		  </el-table>
+		</div>
+		</template>
+
+	</body>
+
+	<script type="text/javascript">
+
+		const store = new Vuex.Store({
+		  state: {
+		  	form: {
+          name: '',
+          age: 0,
+          gender: '',
+          latitude: 0,
+          longitude: 0,
+          religion: '',
+          nationality: ''
+        }
+		  },
+		  mutations: {
+			  updateForm (state, form) {
+			    state.form = form
+			    window.localStorage.setItem('profile', JSON.stringify(form))
+			  }
+		  },
+		  actions: {
+		  },
+		  getters: {
+		  	form (state, getters){
+		  		var profile = window.localStorage.getItem('profile');
+		  		console.log(profile)
+		  		if(profile == null)
+		  			return state.form;
+		  		else
+		  			return JSON.parse(profile);
+		  	}
+		  }
+		})
+
+		const Home = {
+			template: '#home',
+			data: function() {
+				return {
+				}
+			},
+			methods: {
+			},
+			computed: {
+			}
+		}
+
+		const RegisterUser = {
+			template: '#registerUser',
+			data: function() {
+
+	      var checkLatitude = (rule, value, callback) => {
+	      	var f = parseFloat(value);
+	        if (isNaN(f)) {
+	          return callback(new Error('Please input float number'));
+	        }
+
+          if (f < -90 || f > 90) {
+            callback(new Error('Invalid latitude range.'));
+          }
+	        return callback();
+	      };
+
+	      var checkLongitude = (rule, value, callback) => {
+	      	var f = parseFloat(value);
+	        if (isNaN(f)) {
+	          return callback(new Error('Please input float number'));
+	        }
+
+          if (f < -180 || f > 180) {
+            callback(new Error('Invalid longitude range.'));
+          }
+	        return callback();
+	      };
+
+	      return {
+	        form: this.$store.getters.form,
+	        rules: {
+	          name: [
+	            { required: true, message: 'Input your name', trigger: 'blur' }
+	          ],
+	          age: [
+	            { required: true, message: 'Input your age', trigger: 'blur' }
+	          ],
+	          gender: [
+	            { required: true, message: 'Select your gender', trigger: 'change' }
+	          ],
+	          latitude: [
+	            { required: true, message: 'Input your latitude', trigger: 'blur' },
+	            { validator: checkLatitude, trigger: 'blur' }
+	          ],
+	          longitude: [
+	            { required: true, message: 'Input your longitude', trigger: 'blur' },
+	            { validator: checkLongitude, trigger: 'blur' }
+	          ],
+	          religion: [
+	            { required: true, message: 'Select your religion', trigger: 'change' }
+	          ],
+	          nationality: [
+	            { required: true, message: 'Select your nationality', trigger: 'change' }
+	          ]
+	        }
+	      }
+	    },
+	    methods: {
+	      onSubmit() {
+	        this.$refs['form'].validate((valid) => {
+	          if (valid) {
+	            this.$http.post('/users', this.form).then(response => {
+						    this.$alert('Now, find your new lover.', 'Success Register Profile', {
+				          confirmButtonText: 'OK',
+				          callback: action => {
+							      this.$store.commit('updateForm', this.form)
+				          	this.$router.push('/suggest')
+				          }
+				        });
+						  }, response => {
+						    this.$message({
+		              type: 'error',
+		              message: 'Sorry. Failed to register your profile.'
+		            });
+						  });
+
+	          } else {
+					    this.$message({
+	              type: 'info',
+	              message: 'Please check your profile.'
+	            });
+	            return false;
+	          }
+	        });
+	      }
+	    },
+			computed: {
+			}
+		}
+
+		const Suggest = {
+			template: '#suggestUser',
+			data: function() {
+	      return {
+	      	searchResult: [],
+			  	searchForm: {
+			  		age: this.$store.getters.form.age,
+	          ageType: '',
+	          gender: '',
+			  		latitude: this.$store.getters.form.latitude,
+			  		longitude: this.$store.getters.form.longitude,
+	          distance: 0,
+	          religion: '',
+	          nationality: ''
+	        },
+	        searchRules: {
+	          distance: [
+	            { required: true, message: 'Input distance', trigger: 'blur' }
+	          ]
+	        }
+	      }
+			},
+			methods: {
+	      onSubmit() {
+	        this.$refs['searchForm'].validate((valid) => {
+	          if (valid) {
+	          	var resource = this.$http;
+	            resource.get('/search', {'params': this.searchForm}).then(response => {
+	            	var results = response.body.result;
+
+	            	results.forEach(function(item){
+	            		if (item.gender == 'M')
+	            			item.gender = 'Male'
+	            		else
+	            			item.gender = 'Female'
+
+	            		switch(item.religion){
+	            			case 'CH':
+	            				item.religion = 'Christianity'
+	            				break;
+	            			case 'CA':
+	            				item.religion = 'Catholic'
+	            				break;
+	            			case 'BU':
+	            				item.religion = 'Buddhism'
+	            				break;
+	            			case 'IS':
+	            				item.religion = 'Islam'
+	            				break;
+	            			case 'AT':
+	            				item.religion = 'Atheism'
+	            				break;
+	            		}
+
+	            		switch(item.nationality){
+	            			case 'KO':
+	            				item.nationality = 'Korea'
+	            				break;
+	            			case 'US':
+	            				item.nationality = 'USA'
+	            				break;
+	            			case 'JP':
+	            				item.nationality = 'Japan'
+	            				break;
+	            			case 'CN':
+	            				item.nationality = 'China'
+	            				break;
+	            		}
+
+	            		item.address = '('+item.latitude+','+item.longitude+')';
+
+	            		resource.get('http://maps.googleapis.com/maps/api/geocode/json', {'params': {
+	            			'latlng': item.latitude+','+item.longitude,
+	            			'language': 'ko'
+	            		}}).then(response => {
+	            			var result = response.data.results[0]
+	            			if(result != null) {
+	            				item.address = result.formatted_address;
+	            			}
+	            		}, response => {
+	            			console.log(response.data)
+								  });
+
+								});
+
+	            	this.searchResult = results;
+						  }, response => {
+						    this.$message({
+		              type: 'error',
+		              message: 'Sorry. Failed to register your profile.'
+		            });
+						  });
+
+	          } else {
+					    this.$message({
+	              type: 'info',
+	              message: 'Please check your profile.'
+	            });
+	            return false;
+	          }
+	        });
+	      }
+			},
+			computed: {
+			}
+		}
+
+		const router = new VueRouter({
+		  routes: [{
+		      path: '/',
+		      component: Home
+		    },{
+		      path: '/register',
+		      component: RegisterUser
+		    },
+		    {
+		      path: '/suggest',
+		      component: Suggest
+		    }
+		  ]
+		})
+
+		const app = new Vue({
+			el: '#app',
+  		router,
+			store,
+			components: {Home, RegisterUser, Suggest},
+			data: {
+        activeIndex: '1',
+        activeIndex2: '1'
+			}
+		})
+
+	</script>
+	</html>

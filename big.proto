@@ -1,0 +1,53 @@
+syntax = "proto3";
+option java_multiple_files = true;
+option java_package = "com.github.backendservice.big";
+option java_outer_classname = "user";
+
+package big;
+
+service Big {
+    rpc Hello (HelloRequest) returns (HelloResponse) {}
+    rpc RegistUser (UserRequest) returns (UserResponse) {}
+    rpc FindUser (FindRequest) returns (FindResponse) {}
+}
+
+message HelloRequest {
+    string name = 1;
+}
+
+message HelloResponse {
+    string message = 1;
+}
+
+message UserRequest {
+    string name = 1;
+    int32 age = 2;
+    string gender = 3;
+    float latitude = 4;
+    float longitude = 5;
+    string religion = 6;
+    string nationality = 7;
+}
+
+message UserResponse {
+    int32 code = 1;
+    string message = 2;
+}
+
+message FindRequest {
+    int32 age = 1;
+    string ageType = 2;
+    string gender = 3;
+    float latitude = 4;
+    float longitude = 5;
+    int32 distance = 6;
+    string religion = 7;
+    string nationality = 8;
+}
+
+message FindResponse {
+    repeated UserRequest result = 1;
+    int32 count = 2;
+    int32 code = 3;
+    string message = 4;
+}
