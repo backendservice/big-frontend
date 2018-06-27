@@ -4,7 +4,7 @@ var bodyParser = require("body-parser");
 var app = express();
 var grpc = require('grpc');
 var big_proto = grpc.load('big.proto').big;
-var client = new big_proto.Big('192.168.0.20:50051', grpc.credentials.createInsecure());
+var client = new big_proto.Big('13.125.148.61:50051', grpc.credentials.createInsecure());
 
 app.use(express.static('public'));
 app.use( bodyParser.json() );       // to support JSON-encoded bodies
@@ -23,7 +23,11 @@ app.post('/users', function (req, res) {
 	req.body.latitude = parseFloat(req.body.latitude)
 	req.body.longitude = parseFloat(req.body.longitude)
   client.RegistUser(req.body, function(err, response) {
-  	res.send(response.message);
+  	if(err != null){
+  		res.status(400).send('failed grpc')
+  	} else {
+  		res.send(response.message);
+  	}
   });
 });
 
@@ -34,7 +38,11 @@ app.get('/search', function (req, res) {
 	obj.longitude = parseFloat(obj.longitude)
 	obj.distance = parseInt(obj.distance)
   client.FindUser(obj, function(err, response) {
-  	res.send(response);
+  	if(err != null){
+  		res.status(400).send('failed grpc')
+  	} else {
+  		res.send(response);
+  	}
   });
 });
 
